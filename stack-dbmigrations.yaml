@@ -1,0 +1,10 @@
+resolver: lts-15.3
+extra-deps:
+- HDBC-postgresql-2.3.2.7
+- HsSyck-0.53
+- dbmigrations-2.0.0
+- dbmigrations-postgresql-2.0.0
+- yaml-light-0.1.4
+- HDBC-2.4.0.4@sha256:6fc3406c7ccf709e303e03b009e0c7f6be0774d0095f190e1014786cc955d702,3080
+
+# allow-newer: true
