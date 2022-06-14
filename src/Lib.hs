@@ -9,8 +9,6 @@ module Lib
 import Network.Wai
 import Network.Wai.Handler.Warp
 import Servant
-import Data.Time (UTCTime(..))
-import Data.Time.Calendar
 import Database.PostgreSQL.Simple
 import Control.Monad.IO.Class
 import Data.Time.Clock (secondsToDiffTime)
@@ -33,9 +31,6 @@ localPG = defaultConnectInfo
         , connectPassword = "doncamatic"
         }
 
-connectDb :: IO Connection
-connectDb = connect localPG
-
 type API = "people" :> Get '[JSON] [Person]
         :<|> "person" :> Capture "uid" Int :> Get '[JSON] [Person]
         :<|> "new-person" :> ReqBody '[JSON] PersonBaseData :> Post '[JSON] [Int64]
@@ -44,7 +39,7 @@ type API = "people" :> Get '[JSON] [Person]
 
 startApp :: IO ()
 startApp = do
-        conn <- connectDb
+        conn <- connect localPG
         run 8080 $ app conn
 
 app :: Connection -> Application

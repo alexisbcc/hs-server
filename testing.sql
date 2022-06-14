@@ -17,3 +17,8 @@ INSERT INTO person VALUES
 
 
 INSERT INTO person VALUES (DEFAULT,'Fruta','Magica','fmagica@gmail.com',current_timestamp) RETURNING uid;
+
+
+CREATE DATABASE bloghaskell_test WITH OWNER=haskell_server_test;
+
+CREATE USER haskell_server_test WITH PASSWORD 'jw8s0F4' SUPERUSER;
