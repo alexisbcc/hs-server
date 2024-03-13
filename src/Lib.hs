@@ -6,12 +6,17 @@ module Lib
     , app
     ) where
 
+import Control.Monad (forever)
+import Control.Concurrent (threadDelay)
 import Network.Wai
 import Network.Wai.Handler.Warp
 import Servant
 import Database.PostgreSQL.Simple
+import Data.Text (Text)
 import Control.Monad.IO.Class
 import Data.Time.Clock (secondsToDiffTime)
+import Servant.API.WebSocket (WebSocketPending)
+import Network.WebSockets (PendingConnection, acceptRequest, withPingThread, receiveData, sendTextData)
 import Models.Person
         (Person
         , PersonBaseData
@@ -36,6 +41,7 @@ type API = "people" :> Get '[JSON] [Person]
         :<|> "new-person" :> ReqBody '[JSON] PersonBaseData :> Post '[JSON] [Int64]
         :<|> "update-person" :> Capture "uid" Int :> ReqBody '[JSON] PersonBaseData :> Patch '[JSON] Bool
         :<|> "delete-person" :> Capture "uid" Int :> Delete '[JSON] Bool
+        :<|> "ws-echo" :> WebSocketPending
 
 startApp :: IO ()
 startApp = do
@@ -54,6 +60,7 @@ server conn = people
       :<|> newPerson
       :<|> modifyPerson
       :<|> removePerson
+      :<|> wsTest
 
   where people :: Handler [Person]
         people = liftIO $ getPeople conn
@@ -69,3 +76,11 @@ server conn = people
 
         removePerson :: Int -> Handler Bool
         removePerson uid = liftIO $ deletePerson conn uid
+
+        wsTest :: MonadIO m => PendingConnection -> m ()
+        wsTest pending = do
+                c <- liftIO $ acceptRequest pending
+                liftIO $ withPingThread c 10 (return ()) $ do
+                        forever $ do
+                                msg <- receiveData c :: IO Text
+                                sendTextData c msg
