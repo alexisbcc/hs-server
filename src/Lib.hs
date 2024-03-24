@@ -10,6 +10,7 @@ import Control.Monad (forever)
 import Control.Concurrent (threadDelay)
 import Network.Wai
 import Network.Wai.Handler.Warp
+import Network.Wai.Middleware.Cors
 import Servant
 import Database.PostgreSQL.Simple
 import Data.Text (Text)
@@ -49,7 +50,7 @@ startApp = do
         run 8080 $ app conn
 
 app :: Connection -> Application
-app = serve api . server
+app = simpleCors . serve api . server
 
 api :: Proxy API
 api = Proxy
