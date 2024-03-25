@@ -26,6 +26,7 @@ library
   exposed-modules:
       Lib
       Models.Person
+      WsApp
   other-modules:
       Paths_hs_server
   hs-source-dirs:

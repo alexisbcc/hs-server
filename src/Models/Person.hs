@@ -1,38 +1,49 @@
-{-# LANGUAGE DataKinds       #-}
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE DataKinds #-}
 {-# LANGUAGE OverloadedStrings #-}
-module Models.Person
-    ( Person
-    , PersonBaseData
-    , getPeople
-    , getPerson
-    , createPerson
-    , updatePerson
-    , deletePerson
-    ) where
+{-# LANGUAGE TemplateHaskell #-}
 
-import Data.Aeson.TH
-import Database.PostgreSQL.Simple
-import Database.PostgreSQL.Simple.FromRow
-import Data.Time (UTCTime(..))
-import Servant (NoContent (NoContent))
+module Models.Person
+  ( Person,
+    PersonBaseData,
+    getPeople,
+    getPerson,
+    createPerson,
+    updatePerson,
+    deletePerson,
+  )
+where
+
+import Data.Aeson.TH (defaultOptions, deriveJSON)
 import Data.Int (Int64)
+import Data.Time (UTCTime (..))
+import Database.PostgreSQL.Simple
+  ( Connection,
+    FromRow,
+    Only (Only),
+    execute,
+    query,
+    query_,
+  )
+import Database.PostgreSQL.Simple.FromRow (FromRow (..), field)
+import Servant (NoContent (NoContent))
 
 data PersonBaseData = PersonBaseData
-  { pbd_first_name        :: String
-  , pbd_last_name         :: String
-  , pbd_email             :: String
-  } deriving (Eq, Show)
+  { pbd_first_name :: String,
+    pbd_last_name :: String,
+    pbd_email :: String
+  }
+  deriving (Eq, Show)
 
 $(deriveJSON defaultOptions ''PersonBaseData)
 
 data Person = Person
-  { uid               :: Int64
-  , first_name        :: String
-  , last_name         :: String
-  , email             :: String
-  , registration_date :: UTCTime
-  } deriving (Eq, Show)
+  { uid :: Int64,
+    first_name :: String,
+    last_name :: String,
+    email :: String,
+    registration_date :: UTCTime
+  }
+  deriving (Eq, Show)
 
 $(deriveJSON defaultOptions ''Person)
 
