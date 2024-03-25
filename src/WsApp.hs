@@ -43,7 +43,7 @@ broadcast message clients = do
 
 wsApp :: MVar ChatParticipants -> WS.PendingConnection -> IO ()
 wsApp state pending = do
-  
+
   conn <- WS.acceptRequest pending
   WS.withPingThread conn 30 (return ()) $ do
     msg <- WS.receiveData conn
@@ -85,7 +85,7 @@ wsApp state pending = do
 -- The talk function continues to read messages from a single client until he
 -- disconnects. All messages are broadcasted to the other clients.
 
-talk :: Client -> MVar ServerState -> IO ()
+talk :: Client -> MVar ChatParticipants -> IO ()
 talk (user, conn) state = forever $ do
   msg <- WS.receiveData conn
   readMVar state

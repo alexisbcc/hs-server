@@ -36,11 +36,26 @@ import Models.Person
     getPerson,
     updatePerson,
   )
-import Network.Wai
-import Network.Wai.Handler.Warp
-import Network.Wai.Middleware.Cors
+import Network.Wai (Application)
+import Network.Wai.Handler.Warp (run)
+import Network.Wai.Middleware.Cors (simpleCors)
 import Network.WebSockets (PendingConnection, acceptRequest, receiveData, sendTextData, withPingThread)
 import Servant
+  ( Application,
+    Capture,
+    Delete,
+    Get,
+    Handler,
+    JSON,
+    Patch,
+    Post,
+    Proxy (..),
+    ReqBody,
+    Server,
+    serve,
+    type (:<|>) (..),
+    type (:>),
+  )
 import Servant.API.WebSocket (WebSocketPending)
 import WsApp (clientState, wsApp)
 
