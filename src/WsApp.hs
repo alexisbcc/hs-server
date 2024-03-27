@@ -36,11 +36,6 @@ broadcast message clients = do
   T.putStrLn message
   forM_ clients $ \(_, conn) -> WS.sendTextData conn message
 
--- main :: IO ()
--- main = do
---     state <- newMVar clientState
---     WS.runServer "127.0.0.1" 9160 $ application state
-
 wsApp :: MVar ChatParticipants -> WS.PendingConnection -> IO ()
 wsApp state pending = do
 
@@ -77,16 +72,15 @@ wsApp state pending = do
           prefix = "Hi! I am "
           client = (T.drop (T.length prefix) msg, conn)
           disconnect = do
-            -- Remove client and return new state
             s <- modifyMVar state $ \s ->
               let s' = removeClient client s in return (s', s')
             broadcast (fst client <> " disconnected") s
 
--- The talk function continues to read messages from a single client until he
--- disconnects. All messages are broadcasted to the other clients.
 
 talk :: Client -> MVar ChatParticipants -> IO ()
 talk (user, conn) state = forever $ do
+  clients <- readMVar state
+  T.putStrLn $ T.pack $ show (fst <$> clients)
   msg <- WS.receiveData conn
   readMVar state
     >>= broadcast

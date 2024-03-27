@@ -9,7 +9,7 @@ module Lib
 where
 
 import Control.Concurrent (threadDelay)
-import Control.Concurrent.MVar (newMVar)
+import Control.Concurrent.MVar (newMVar, MVar)
 import Control.Monad (forever)
 import Control.Monad.IO.Class
 import Data.Int (Int64)
@@ -57,7 +57,7 @@ import Servant
     type (:>),
   )
 import Servant.API.WebSocket (WebSocketPending)
-import WsApp (clientState, wsApp)
+import WsApp (clientState, wsApp, ChatParticipants)
 
 localPG :: ConnectInfo
 localPG =
@@ -79,16 +79,17 @@ type API =
 startApp :: IO ()
 startApp = do
   conn <- connect localPG
-  run 8080 $ app conn
+  clients <- newMVar clientState
+  run 8080 $ app conn clients
 
-app :: Connection -> Application
-app = simpleCors . serve api . server
+app :: Connection -> MVar ChatParticipants -> Application
+app conn participants = simpleCors $ serve api (server conn participants)
 
 api :: Proxy API
 api = Proxy
 
-server :: Connection -> Server API
-server conn =
+server :: Connection -> MVar ChatParticipants -> Server API
+server conn clientList =
   people
     :<|> person
     :<|> newPerson
@@ -113,5 +114,4 @@ server conn =
 
     wsChat :: (MonadIO m) => PendingConnection -> m ()
     wsChat pending = do
-      clients <- liftIO $ newMVar clientState
-      liftIO $ wsApp clients pending
+      liftIO $ wsApp clientList pending
