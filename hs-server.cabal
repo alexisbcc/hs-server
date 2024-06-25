@@ -1,0 +1,94 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.36.0.
+--
+-- see: https://github.com/sol/hpack
+
+name:           hs-server
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/githubuser/hs-server#readme>
+homepage:       https://github.com/githubuser/hs-server#readme
+bug-reports:    https://github.com/githubuser/hs-server/issues
+author:         Author name here
+maintainer:     example@example.com
+copyright:      2024 Alexis Crespo
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+
+source-repository head
+  type: git
+  location: https://github.com/githubuser/hs-server
+
+library
+  exposed-modules:
+      Lib
+      Models.Person
+      WsApp
+  other-modules:
+      Paths_hs_server
+  hs-source-dirs:
+      src
+  build-depends:
+      aeson
+    , base >=4.7 && <5
+    , postgresql-simple
+    , servant-server
+    , servant-websockets
+    , text
+    , time
+    , wai
+    , wai-cors
+    , warp
+    , websockets
+  default-language: Haskell2010
+
+executable hs-server-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_hs_server
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      aeson
+    , base
+    , hs-server
+    , postgresql-simple
+    , servant-server
+    , servant-websockets
+    , text
+    , time
+    , wai
+    , wai-cors
+    , warp
+    , websockets
+  default-language: Haskell2010
+
+test-suite hs-server-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_hs_server
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      aeson
+    , base
+    , hs-server
+    , hspec
+    , hspec-wai
+    , hspec-wai-json
+    , postgresql-simple
+    , servant-server
+    , servant-websockets
+    , text
+    , time
+    , wai
+    , wai-cors
+    , warp
+    , websockets
+  default-language: Haskell2010

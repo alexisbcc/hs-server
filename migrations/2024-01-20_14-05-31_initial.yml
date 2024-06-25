@@ -1,0 +1,14 @@
+Description: (Describe migration here.)
+Created: 2024-01-20 14:05:35.577755619 UTC
+Depends: 
+Apply: |
+  CREATE TABLE person (
+    uid serial PRIMARY KEY,
+    first_name VARCHAR ( 50 ) NOT NULL,
+    last_name VARCHAR ( 50 ) NOT NULL,
+    email VARCHAR ( 255 ) UNIQUE NOT NULL,
+    registration_date TIMESTAMPTZ NOT NULL
+  );
+
+Revert: |
+  DROP TABLE person;
